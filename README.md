@@ -55,43 +55,96 @@ Before running this project locally, ensure you have the following installed:
 ### Step 1: Clone the Repository
 
 ```bash
+
 git clone https://github.com/Jag2007/Caption-Generator.git
 cd Caption-Generator 
 ```
-###  Step 2: Set Up Python Environment for Whisper
-##### It's recommended to use a virtual environment for Python dependencies:
 
-#### Create virtual environment
-```bash
-python -m venv venv
-```
-#### Activate virtual environment
-#### On Linux/macOS:
-```bash
-source venv/bin/activate
-```
-#### On Windows:
-```bash
-venv\Scripts\activate
-```
-#### Install Whisper
-```bash
-pip install openai-whisper
-```
 
-### Step 3: Backend Setup
-#### Open a terminal window and run:
+###### Follow these steps carefully after cloning the repository to set up both **backend** and **frontend** along with **Python Whisper dependencies**.
+
+---
+###  Step 2: Install Node.js Dependencies
+##### You need to install dependencies for both backend and frontend.
+
 ```bash
+# Install root dependencies
+npm install
+
+# Install backend dependencies
 cd backend
 npm install
-npm start
-```
-### Step 4: Frontend Setup
-#### Open a terminal window and run:
-```bash
+cd ..
+
+# Install frontend dependencies
 cd frontend
 npm install
+cd ..
+
+```
+
+### Step 3: Set Up Python Environment for Whisper
+#### Whisper requires Python dependencies. Use a virtual environment.
+#### Create a Virtual Environment:
+```bash
+cd backend
+python -m venv venv
+
+source venv/bin/activate     # On Linux/macOS
+venv\Scripts\activate        # On Windows
+
+```
+#### (Optional) Create Hinglish-specific Environment
+```bash 
+python3 -m venv .hinglish-venv
+
+source .hinglish-venv/bin/activate
+```
+
+#### Install Python Dependencies
+```bash 
+pip install torch numpy librosa soundfile transformers
+
+pip install openai-whisper
+```
+### Step 4: Install FFmpeg
+#### Whisper requires FFmpeg. Install via npm:
+```bash
+npm install ffmpeg
+
+```
+#### Or install globally on your system (recommended):
+* macOS (Homebrew):
+```bash
+brew install ffmpeg
+```
+* Linux (Debian/Ubuntu):
+```bash
+sudo apt-get install ffmpeg
+
+```
+* Windows: Download from FFmpeg official site.
+
+### Step 5: Run Backend
+```bash 
+cd backend
+npm start
+
+```
+##### Backend will start on:
+```bash
+http://localhost:3001
+```
+
+### Step 6: Run Frontend
+```bash 
+cd frontend
+
 npm run dev
+```
+#### Frontend will start on:
+```bash
+http://localhost:5173
 ```
 
 ### Usage
@@ -154,3 +207,7 @@ SimoraAI
 #### Acknowledgments
 ###### This project was developed as part of a full-stack internship task focusing on Remotion integration, speech-to-text processing, and multilingual text rendering.
 ###### This project was developed with the assistance of AI tools for code generation and optimization. I gained a strong understanding of the overall workflow, architecture, and integration process, ensuring that I can explain, maintain, and extend the project independently.
+
+#
+
+#### Made with ❤️ by Jagruthi Pulumati
