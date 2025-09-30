@@ -24,7 +24,7 @@ const VideoUploader = () => {
   const fileInputRef = useRef(null);
   const ffmpegRef = useRef(new FFmpeg());
 
-  const API_BASE_URL = "https://simora-caption-generator.onrender.com/api";
+  const API_BASE_URL = "https://simora-caption-generator-server.vercel.app/api";
 
   const loadFFmpeg = async () => {
     const ffmpeg = ffmpegRef.current;

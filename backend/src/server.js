@@ -5,6 +5,7 @@ const fs = require("fs-extra");
 require("dotenv").config();
 const app = express();
 app.use(cors());
+const os = require("os");
 
 app.use((req, res, next) => {
   res.setHeader(
@@ -33,7 +34,7 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-const uploadsDir = path.join(__dirname, "..", "uploads");
+const uploadsDir = path.join(os.tmpdir(), "uploads");
 fs.ensureDirSync(uploadsDir);
 
 app.use("/api", uploadRoutes);
