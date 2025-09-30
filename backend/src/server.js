@@ -3,38 +3,25 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs-extra");
 require("dotenv").config();
-const app = express();
-app.use(cors());
-const os = require("os");
 
-app.use((req, res, next) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://simora-caption-generator.vercel.app/"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Content-Type-Options, Accept, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-  );
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  res.setHeader("Access-Control-Allow-Private-Network", true);
-  //  Firefox caps this at 24 hours (86400 seconds). Chromium (starting in v76) caps at 2 hours (7200 seconds). The default value is 5 seconds.
-  res.setHeader("Access-Control-Max-Age", 7200);
-
-  next();
-});
 const uploadRoutes = require("./routes/upload");
 
+const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URLS?.split(",") || [
+      "http://localhost:5173",
+      "http://localhost:3001",
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-const uploadsDir = path.join(os.tmpdir(), "uploads");
+const uploadsDir = path.join(__dirname, "..", "uploads");
 fs.ensureDirSync(uploadsDir);
 
 app.use("/api", uploadRoutes);
@@ -64,9 +51,8 @@ app.use("*", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Video Caption Backend server is running on port ${PORT}`);
-  console.log(
-    `📡 Health check: https://simora-caption-generator.onrender.com/health`
-  );
+  console.log(`📡 Health check: http://localhost:${PORT}/health`);
+  console.log(`📡 Health check: http://localhost:${PORT}/health`);
   if (process.env.HINGLISH_PYTHON) {
     console.log(`🚀🚀🚀 Hinglish Python: ${process.env.HINGLISH_PYTHON}`);
   } else {
