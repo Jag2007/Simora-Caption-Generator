@@ -1,0 +1,58 @@
+/* :root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: #eaeaea;
+  background-color: #0f0f10;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #dcdcdc;
+  text-decoration: underline;
+}
+a:hover {
+  color: #ffffff;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid #2a2a2e;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #161618;
+  color: #eaeaea;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+button:hover {
+  background-color: #1b1b1d;
+  border-color: #3a3a3f;
+}
+button:focus,
+button:focus-visible {
+  outline: 2px solid #eaeaea;
+  outline-offset: 2px;
+}
+
+Light mode not used; app is monochrome dark for focus */
