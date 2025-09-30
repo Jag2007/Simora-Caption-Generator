@@ -3,11 +3,11 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs-extra");
 require("dotenv").config();
+const app = express();
 app.use(cors());
 
 const uploadRoutes = require("./routes/upload");
 
-const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json({ limit: "50mb" }));
