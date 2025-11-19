@@ -1,3 +1,4 @@
+// API routes for audio upload, transcription, and video rendering with captions
 const express = require("express");
 const fs = require("fs-extra");
 const path = require("path");
@@ -11,10 +12,10 @@ const {
   generateRemotionCaptions,
   validateSRT,
 } = require("../utils/srt");
+const { renderVideoWithCaptions } = require("../utils/videoRenderer");
 
 const router = express.Router();
 
-// POST /api/upload-audio
 router.post("/upload-audio", upload.single("audio"), async (req, res) => {
   try {
     if (!req.file) {
@@ -31,32 +32,26 @@ router.post("/upload-audio", upload.single("audio"), async (req, res) => {
 
     const audioFilePath = req.file.path;
 
-    // Process audio with Whisper
     console.log("🚀🚀🚀 Processing audio with Whisper");
     const transcription = await processAudioWithWhisper(audioFilePath);
 
-    // Generate SRT format
     console.log("🚀🚀🚀 Generating SRT file");
     const srtContent = generateSRT(transcription);
 
-    // Generate Remotion-compatible captions
     const remotionCaptions = generateRemotionCaptions(transcription);
 
-    // Validate SRT content
     const validation = validateSRT(srtContent);
     if (!validation.isValid) {
       console.warn("👺 SRT validation warnings", validation.errors);
     }
 
-    // Clean up uploaded file
     await fs.remove(audioFilePath);
     console.log("🚀🚀🚀 Temporary file cleaned up");
 
-    // Send response
     res.json({
       success: true,
       srt: srtContent,
-      captions: remotionCaptions, // Remotion-compatible format
+      captions: remotionCaptions,
       filename: req.file.originalname,
       transcription: transcription,
       duration:
@@ -69,7 +64,6 @@ router.post("/upload-audio", upload.single("audio"), async (req, res) => {
   } catch (error) {
     console.error("👺 Error processing audio", error);
 
-    // Clean up file if it exists
     if (req.file && req.file.path) {
       try {
         await fs.remove(req.file.path);
@@ -85,7 +79,6 @@ router.post("/upload-audio", upload.single("audio"), async (req, res) => {
   }
 });
 
-// POST /api/upload-audio-hinglish - Specialized Hinglish processing
 router.post(
   "/upload-audio-hinglish",
   upload.single("audio"),
@@ -105,34 +98,28 @@ router.post(
 
       const audioFilePath = req.file.path;
 
-      // Process audio with specialized Hinglish Whisper model
       console.log("🚀 Processing audio with Hinglish Whisper model...");
       const transcription = await processAudioWithHinglishWhisper(
         audioFilePath
       );
 
-      // Generate SRT format
       console.log("🚀 Generating SRT file...");
       const srtContent = generateSRT(transcription);
 
-      // Generate Remotion-compatible captions
       const remotionCaptions = generateRemotionCaptions(transcription);
 
-      // Validate SRT content
       const validation = validateSRT(srtContent);
       if (!validation.isValid) {
         console.warn("⚠️ SRT validation warnings:", validation.errors);
       }
 
-      // Clean up uploaded file
       await fs.remove(audioFilePath);
       console.log("🧹 Temporary file cleaned up");
 
-      // Send response
       res.json({
         success: true,
         srt: srtContent,
-        captions: remotionCaptions, // Remotion-compatible format
+        captions: remotionCaptions,
         filename: req.file.originalname,
         transcription: transcription,
         duration:
@@ -147,7 +134,6 @@ router.post(
     } catch (error) {
       console.error("❌ Error processing Hinglish audio:", error);
 
-      // Clean up file if it exists
       if (req.file && req.file.path) {
         try {
           await fs.remove(req.file.path);
@@ -164,7 +150,100 @@ router.post(
   }
 );
 
-// GET /api/test
+router.post(
+  "/render-video",
+  upload.fields([
+    { name: "video", maxCount: 1 },
+    { name: "srt", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      if (!req.files || !req.files.video || !req.files.srt) {
+        return res.status(400).json({
+          error: true,
+          message: "Both video and SRT files are required",
+        });
+      }
+
+      const videoFile = req.files.video[0];
+      const srtFile = req.files.srt[0];
+
+      console.log(`🎬 Rendering video: ${videoFile.filename}`);
+      console.log(`📝 Using SRT: ${srtFile.filename}`);
+
+      const videoPath = videoFile.path;
+      const srtPath = srtFile.path;
+      const outputPath = path.join(
+        path.dirname(videoPath),
+        `rendered-${Date.now()}.mp4`
+      );
+
+      const captionStyle = req.body.captionStyle || "bottom";
+      const captionFont = req.body.captionFont || "Arial";
+      const captionSize = parseInt(req.body.captionSize) || 24;
+      const captionWeight = parseInt(req.body.captionWeight) || 700;
+      const captionColor = req.body.captionColor || "#ffffff";
+
+      console.log("🎨 Caption settings received:", {
+        captionStyle,
+        captionFont,
+        captionSize,
+        captionWeight,
+        captionColor,
+      });
+
+      await renderVideoWithCaptions(videoPath, srtPath, outputPath, {
+        style: captionStyle,
+        font: captionFont,
+        fontSize: captionSize,
+        fontWeight: captionWeight,
+        color: captionColor,
+      });
+
+      res.download(outputPath, (err) => {
+        if (err) {
+          console.error("❌ Error sending file:", err);
+          if (!res.headersSent) {
+            res.status(500).json({
+              error: true,
+              message: "Error sending rendered video",
+            });
+          }
+        }
+
+        setTimeout(async () => {
+          try {
+            await Promise.all([
+              fs.remove(videoPath).catch(() => {}),
+              fs.remove(srtPath).catch(() => {}),
+              fs.remove(outputPath).catch(() => {}),
+            ]);
+            console.log("🧹 Temporary files cleaned up");
+          } catch (cleanupError) {
+            console.error("Error cleaning up files:", cleanupError);
+          }
+        }, 5000);
+      });
+    } catch (error) {
+      console.error("❌ Error rendering video:", error);
+
+      if (req.files) {
+        if (req.files.video) {
+          fs.remove(req.files.video[0].path).catch(() => {});
+        }
+        if (req.files.srt) {
+          fs.remove(req.files.srt[0].path).catch(() => {});
+        }
+      }
+
+      res.status(500).json({
+        error: true,
+        message: error.message || "Failed to render video with captions",
+      });
+    }
+  }
+);
+
 router.get("/test", (req, res) => {
   res.json({
     message: "API is working!",
@@ -174,6 +253,8 @@ router.get("/test", (req, res) => {
         "Upload audio file for transcription (Large Whisper model)",
       "POST /api/upload-audio-hinglish":
         "Upload audio file for Hinglish transcription (Specialized model)",
+      "POST /api/render-video":
+        "Render video with captions (requires video and SRT files)",
     },
   });
 });

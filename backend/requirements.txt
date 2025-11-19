@@ -4,3 +4,5 @@ librosa
 soundfile
 numpy
 huggingface-hub
+ffmpeg
+whisper
