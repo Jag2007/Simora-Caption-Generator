@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { toBlobURL, fetchFile } from "@ffmpeg/util";
 import VideoPlayerWithCaptions from "./VideoPlayerWithCaptions";
+import ENDPOINT from "../constants";
 
 const VideoUploader = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +27,7 @@ const VideoUploader = () => {
   const fileInputRef = useRef(null);
   const ffmpegRef = useRef(new FFmpeg());
 
-  const API_BASE_URL = "http://localhost:3001/api";
+  const API_BASE_URL = `${ENDPOINT}/api`;
 
   const loadFFmpeg = async () => {
     const ffmpeg = ffmpegRef.current;
