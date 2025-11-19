@@ -1,3 +1,4 @@
+// Video player component that displays video with dynamically rendered captions using Remotion
 import React, { useEffect, useMemo, useState } from "react";
 import { Player } from "@remotion/player";
 import RemotionCaptionVideo from "./RemotionCaptionVideo";
@@ -35,7 +36,7 @@ const VideoPlayerWithCaptions = ({
 
   return (
     <div className="video-player-container">
-      <h3>Video with Generated Captions 🎬</h3>
+      <h3>🎥 Video with Generated Captions</h3>
       <div className="video-wrapper">
         {videoUrl ? (
           <Player

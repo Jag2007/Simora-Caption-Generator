@@ -1,8 +1,7 @@
+// Remotion composition component for rendering video with captions in different styles (bottom, topbar, karaoke)
 import React from "react";
 import { AbsoluteFill, Video, useCurrentFrame } from "remotion";
 
-// captionStyle: 'bottom' | 'topbar' | 'karaoke'
-// captionTheme allows runtime font customization
 const RemotionCaptionVideo = ({
   videoSrc,
   captions,
@@ -21,6 +20,7 @@ const RemotionCaptionVideo = ({
 
   const renderCaption = () => {
     if (!currentText) return null;
+
     if (captionStyle === "topbar") {
       return (
         <div
@@ -31,7 +31,7 @@ const RemotionCaptionVideo = ({
             right: 0,
             background: "rgba(15,118,110,0.9)",
             color: captionTheme.color || "#fff",
-            padding: 12,
+            padding: 16,
             textAlign: "center",
             fontWeight: captionTheme.fontWeight || 700,
             fontFamily: captionTheme.fontFamily,
@@ -45,13 +45,10 @@ const RemotionCaptionVideo = ({
       );
     }
     if (captionStyle === "karaoke") {
-      // Simple pulse effect to mimic karaoke emphasis
-      const pulse = 0.85 + 0.15 * Math.sin(frame / 6);
       return (
         <div
           className="caption-overlay"
           style={{
-            transform: `translateX(-50%) scale(${pulse})`,
             fontFamily: captionTheme.fontFamily,
             fontWeight: captionTheme.fontWeight,
             fontSize: captionTheme.fontSize
