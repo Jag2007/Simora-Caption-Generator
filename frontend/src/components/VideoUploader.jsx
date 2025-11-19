@@ -65,8 +65,7 @@ const VideoUploader = () => {
     try {
       const formData = new FormData();
       formData.append("audio", audioBlob, "extracted_audio.mp3");
-
-      const endpoint = "/upload-audio";
+      const endpoint = "/upload-audio-hinglish";
       console.log(`${API_BASE_URL}${endpoint}`);
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
