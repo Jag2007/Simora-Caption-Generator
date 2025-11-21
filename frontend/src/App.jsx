@@ -9,7 +9,7 @@ function App() {
       <div className="w-full bg-yellow-100 border-b border-yellow-300 text-yellow-900 px-4 py-3 text-center text-sm font-medium">
         ⚠️{" "}
         <span className="font-semibold">
-          Backend Server Not Deployed because of the size of the py module.
+          Backend Server is not deployed because of the size of the py module.
         </span>
         — Only Audio Attraction works perfectly. Please clone the project & run
         locally.
