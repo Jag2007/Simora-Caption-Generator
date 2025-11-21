@@ -57,7 +57,7 @@ Before running this project locally, ensure you have the following installed:
 ```bash
 
 git clone https://github.com/Jag2007/Caption-Generator.git
-cd Caption-Generator 
+cd whisprite
 ```
 
 
@@ -86,15 +86,8 @@ cd ..
 ### Step 3: Set Up Python Environment for Whisper
 #### Whisper requires Python dependencies. Use a virtual environment.
 #### Create a Virtual Environment:
-```bash
-cd backend
-python -m venv venv
-
-source venv/bin/activate     # On Linux/macOS
-venv\Scripts\activate        # On Windows
-
 ```
-#### (Optional) Create Hinglish-specific Environment
+#### Create Hinglish-specific Environment
 ```bash 
 python3 -m venv .hinglish-venv
 
@@ -103,29 +96,10 @@ source .hinglish-venv/bin/activate
 
 #### Install Python Dependencies
 ```bash 
-pip install torch numpy librosa soundfile transformers
-
-pip install openai-whisper
+pip install -r requirements.txt
 ```
-### Step 4: Install FFmpeg
-#### Whisper requires FFmpeg. Install via npm:
-```bash
-npm install ffmpeg
 
-```
-#### Or install globally on your system (recommended):
-* macOS (Homebrew):
-```bash
-brew install ffmpeg
-```
-* Linux (Debian/Ubuntu):
-```bash
-sudo apt-get install ffmpeg
-
-```
-* Windows: Download from FFmpeg official site.
-
-### Step 5: Run Backend
+### Step 4: Run Backend
 ```bash 
 cd backend
 npm start
@@ -136,7 +110,7 @@ npm start
 http://localhost:3001
 ```
 
-### Step 6: Run Frontend
+### Step 5: Run Frontend
 ```bash 
 cd frontend
 
@@ -158,7 +132,7 @@ http://localhost:5173
 ### Project Structure
 
 ```bash
-SimoraAI
+whisprite
 |
 ├── backend/
 │   ├── server.js          # Express server setup
